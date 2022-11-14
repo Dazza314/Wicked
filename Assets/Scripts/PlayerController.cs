@@ -75,11 +75,7 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!this.isSwinging)
-        {
-            // While not swinging, the player should face the current cursor location
-            UpdatePlayerRotationWhileAiming();
-        }
+        UpdatePlayerRotationWhileAiming();
 
         if (this.isShooting && !this.isSwinging && CheckMaxGrappleRangeExceeded())
         {
@@ -108,12 +104,12 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter2D(Collision2D collision2D)
+    void OnTriggerEnter2D(Collider2D collider2D)
     {
-        if (collision2D.gameObject.CompareTag("Terrain"))
+        if (collider2D.gameObject.CompareTag("Terrain"))
         {
             // If the player collides with any terrain, the game ends
-            Destroy(this.gameObject, .5f);
+            Destroy(this.gameObject);
         }
     }
     #endregion
