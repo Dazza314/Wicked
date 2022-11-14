@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Terrain
   - Hook
+  - Death
   layers:
   - Default
   - TransparentFX

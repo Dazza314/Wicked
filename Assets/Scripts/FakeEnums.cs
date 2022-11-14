@@ -16,3 +16,10 @@ public enum SwingDirection
     Clockwise,
     AntiClockwise
 }
+
+public struct Tag
+{
+    public static string Death = "Death";
+    public static string Terrain = "Terrain";
+    public static string Hook = "Hook";
+}

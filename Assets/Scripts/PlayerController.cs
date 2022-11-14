@@ -107,9 +107,9 @@ public class PlayerController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collider2D)
     {
-        if (collider2D.gameObject.CompareTag("Terrain"))
+        if (collider2D.gameObject.CompareTag(Tag.Terrain) || collider2D.gameObject.CompareTag(Tag.Death))
         {
-            // If the player collides with any terrain, the game ends
+            // If the player collides with anything, the game ends
             Destroy(this.gameObject);
             SceneManager.LoadScene(Scene.Menu);
         }
