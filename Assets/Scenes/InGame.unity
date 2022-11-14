@@ -837,11 +837,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7888941669423574320, guid: d61bcfa6f4d22d74f8cd12ddb32f7c7f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.56
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7888941669423574320, guid: d61bcfa6f4d22d74f8cd12ddb32f7c7f, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.031380177
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7888941669423574320, guid: d61bcfa6f4d22d74f8cd12ddb32f7c7f, type: 3}
       propertyPath: m_LocalPosition.z
@@ -963,7 +963,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2058364238}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -3, z: 0}
+  m_LocalPosition: {x: -5, y: -3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -984,7 +984,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 10
-  m_LinearDrag: 0
+  m_LinearDrag: 0.4
   m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
@@ -1008,7 +1008,7 @@ MonoBehaviour:
   hookPrefab: {fileID: 6742096962618326742, guid: 20b45410fc6e23947afb14723bcd11b9, type: 3}
   maxGrappleRange: 10
   ropeRenderer: {fileID: 2058364246}
-  speed: 5
+  speed: 6
 --- !u!58 &2058364244
 CircleCollider2D:
   m_ObjectHideFlags: 0

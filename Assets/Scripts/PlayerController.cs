@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -110,6 +111,7 @@ public class PlayerController : MonoBehaviour
         {
             // If the player collides with any terrain, the game ends
             Destroy(this.gameObject);
+            SceneManager.LoadScene(Scene.Menu);
         }
     }
     #endregion
@@ -186,8 +188,6 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void OnSuccessfulHookshot(object sender, EventArgs e)
     {
-        this.isShooting = false;
-        this.isSwinging = true;
         playerInput.SwitchCurrentActionMap(ActionMap.Swinging);
 
         // Unity doesn't seem to handle the swinging physics in the way I want, so I'll do it myself
@@ -198,6 +198,8 @@ public class PlayerController : MonoBehaviour
         swingDirection = angleBetween > 90 ? SwingDirection.Clockwise : SwingDirection.AntiClockwise;
 
         rb.velocity = Vector2.zero;
+        this.isShooting = false;
+        this.isSwinging = true;
     }
 
     /// <summary>
