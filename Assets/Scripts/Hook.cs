@@ -32,6 +32,12 @@ public class Hook : MonoBehaviour
         if (collision.gameObject.CompareTag("Terrain"))
         {
             OnSuccessfulHookshot.Invoke(this, EventArgs.Empty);
+            // Create a joint to hold the hook fixed against the terrain
+            var terrainJoint = this.gameObject.AddComponent<FixedJoint2D>();
+            terrainJoint.enableCollision = false;
+
+            terrainJoint.connectedBody = collision.gameObject.GetComponent<Rigidbody2D>();
+            terrainJoint.enabled = true;
         }
     }
 

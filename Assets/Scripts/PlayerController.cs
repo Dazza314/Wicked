@@ -20,6 +20,11 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     [SerializeField]
     private float maxGrappleRange;
+    /// <summary>
+    /// The renderer for the grappling rope
+    /// </summary>
+    [SerializeField]
+    private LineRenderer ropeRenderer;
     #endregion
 
     #region Properties
@@ -43,6 +48,7 @@ public class PlayerController : MonoBehaviour
     /// The instance of the hook being fired
     /// </summary>
     private Hook hookObject;
+    private DistanceJoint2D rope;
     #endregion Properties
 
     #region Unity methods
@@ -69,6 +75,21 @@ public class PlayerController : MonoBehaviour
             // Check if the max grapple range has been exceeded
             this.isShooting = false;
             this.hookObject.Destroy();
+            rope = null;
+        }
+    }
+
+    void LateUpdate()
+    {
+        if (isShooting || isSwinging)
+        {
+            ropeRenderer.enabled = true;
+            ropeRenderer.positionCount = 2;
+            ropeRenderer.SetPositions(new[] { transform.position, hookObject.transform.position });
+        }
+        else
+        {
+            ropeRenderer.enabled = false;
         }
     }
 
@@ -111,6 +132,7 @@ public class PlayerController : MonoBehaviour
             // Swap action maps once the swing is released
             playerInput.SwitchCurrentActionMap(ActionMap.Flying);
             this.hookObject.Destroy();
+            rope = null;
         }
     }
     #endregion
@@ -153,6 +175,20 @@ public class PlayerController : MonoBehaviour
         this.isShooting = false;
         this.isSwinging = true;
         playerInput.SwitchCurrentActionMap(ActionMap.Swinging);
+
+        AttachRope();
+    }
+
+    void AttachRope()
+    {
+        var newRope = this.gameObject.AddComponent<DistanceJoint2D>();
+        newRope.enableCollision = false;
+
+        // newRope.connectedAnchor = this.hookObject.transform.position;
+        newRope.connectedBody = this.hookObject.GetComponent<Rigidbody2D>();
+        newRope.enabled = true;
+
+        rope = newRope;
     }
 
 }
