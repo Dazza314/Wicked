@@ -25,6 +25,11 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     [SerializeField]
     private LineRenderer ropeRenderer;
+    /// <summary>
+    /// The speed of the player (currently fixed, TODO decide how to spice it up)
+    /// </summary>
+    [SerializeField]
+    private float speed;
     #endregion
 
     #region Properties
@@ -48,7 +53,14 @@ public class PlayerController : MonoBehaviour
     /// The instance of the hook being fired
     /// </summary>
     private Hook hookObject;
-    private DistanceJoint2D rope;
+    /// <summary>
+    /// The direction of rotation that the player is currently undergoing
+    /// </summary>
+    private SwingDirection swingDirection;
+    /// <summary>
+    /// Directional (sign) modifier based on SwingDirection
+    /// </summary>
+    private int swingDirectionModifier => (swingDirection == SwingDirection.Clockwise ? 1 : -1);
     #endregion Properties
 
     #region Unity methods
@@ -69,13 +81,16 @@ public class PlayerController : MonoBehaviour
             UpdatePlayerRotationWhileAiming();
         }
 
-
         if (this.isShooting && !this.isSwinging && CheckMaxGrappleRangeExceeded())
         {
             // Check if the max grapple range has been exceeded
             this.isShooting = false;
             this.hookObject.Destroy();
-            rope = null;
+        }
+
+        if (isSwinging)
+        {
+            Swing();
         }
     }
 
@@ -132,7 +147,10 @@ public class PlayerController : MonoBehaviour
             // Swap action maps once the swing is released
             playerInput.SwitchCurrentActionMap(ActionMap.Flying);
             this.hookObject.Destroy();
-            rope = null;
+
+            // Set the velocity and let Unity handle physics until the next swing
+            var swingRadius = transform.position - hookObject.transform.position;
+            rb.velocity = Vector3.Cross(Vector3.forward, swingRadius.normalized) * speed * swingDirectionModifier;
         }
     }
     #endregion
@@ -176,19 +194,29 @@ public class PlayerController : MonoBehaviour
         this.isSwinging = true;
         playerInput.SwitchCurrentActionMap(ActionMap.Swinging);
 
-        AttachRope();
+        // Unity doesn't seem to handle the swinging physics in the way I want, so I'll do it myself
+        var swingRadius = transform.position - hookObject.transform.position;
+        var swingTangent = Vector3.Cross(swingRadius, Vector3.forward);
+
+        var angleBetween = Vector3.Angle(swingTangent, rb.velocity);
+        swingDirection = angleBetween > 90 ? SwingDirection.Clockwise : SwingDirection.AntiClockwise;
+
+        rb.velocity = Vector2.zero;
     }
 
-    void AttachRope()
+    /// <summary>
+    /// Update the position of the player as they swing around the landed hook
+    /// </summary>
+    void Swing()
     {
-        var newRope = this.gameObject.AddComponent<DistanceJoint2D>();
-        newRope.enableCollision = false;
+        var swingRadius = transform.position - hookObject.transform.position;
+        var angularVelocityRadians = speed / swingRadius.magnitude;
+        var angularVelocityDegrees = Mathf.Rad2Deg * angularVelocityRadians;
 
-        // newRope.connectedAnchor = this.hookObject.transform.position;
-        newRope.connectedBody = this.hookObject.GetComponent<Rigidbody2D>();
-        newRope.enabled = true;
+        // Factor in whether to swing clockwise or anticlockwise
+        var angle = swingDirectionModifier * angularVelocityDegrees;
 
-        rope = newRope;
+        transform.RotateAround(hookObject.transform.position, Vector3.forward, angle * Time.deltaTime);
     }
 
 }
