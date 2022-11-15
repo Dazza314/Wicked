@@ -31,6 +31,16 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     [SerializeField]
     private float speed;
+    /// <summary>
+    /// When commencing a swing the minimum speed to use
+    /// </summary>
+    [SerializeField]
+    private readonly float minimumSwingSpeed = 5;
+    /// <summary>
+    /// The amount of speed to gain upon commence a swing
+    /// </summary>
+    [SerializeField]
+    private float swingAcceleration = 2;
     #endregion
 
     #region Properties
@@ -196,6 +206,8 @@ public class PlayerController : MonoBehaviour
 
         var angleBetween = Vector3.Angle(swingTangent, rb.velocity);
         swingDirection = angleBetween > 90 ? SwingDirection.Clockwise : SwingDirection.AntiClockwise;
+
+        speed = MathF.Max(rb.velocity.magnitude + swingAcceleration, minimumSwingSpeed);
 
         rb.velocity = Vector2.zero;
         this.isShooting = false;
