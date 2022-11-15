@@ -228,5 +228,14 @@ public class PlayerController : MonoBehaviour
 
         transform.RotateAround(hookObject.transform.position, Vector3.forward, angle * Time.deltaTime);
     }
-
+    #region Public methods
+    public int GetCurrentSpeed()
+    {
+        if (isSwinging)
+        {
+            return (int)speed;
+        }
+        return (int)rb.velocity.magnitude;
+    }
+    #endregion
 }
