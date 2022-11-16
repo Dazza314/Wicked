@@ -19,20 +19,19 @@ public class Hook : MonoBehaviour
     /// <summary>
     /// The velocity of the hook projectile
     /// </summary>
-    private Vector2 velocity;
+    private EventHandler destroyEventHandler;
     #endregion
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        EventHandler releaseEventHandler = null;
-        releaseEventHandler = (object sender, EventArgs e) =>
+        destroyEventHandler = (object sender, EventArgs e) =>
         {
-            Destroy();
             // Remove event handler after being invoked once as this instance of Hook will no longer exist
-            GameManager.gameManager.OnReleaseEvent -= releaseEventHandler;
+            GameManager.gameManager.OnReleaseEvent -= destroyEventHandler;
+            this.Destroy();
         };
-        GameManager.gameManager.OnReleaseEvent += releaseEventHandler;
+        GameManager.gameManager.OnReleaseEvent += destroyEventHandler;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -55,8 +54,7 @@ public class Hook : MonoBehaviour
     public void SetDirection(Vector2 direction)
     {
         direction.Normalize();
-        velocity = direction * speed;
-        rb.velocity = velocity;
+        rb.velocity = direction * speed;
     }
 
     /// <summary>
@@ -64,6 +62,8 @@ public class Hook : MonoBehaviour
     /// </summary>
     public void Destroy()
     {
+        // When destorying the hook, remove the eventHandler which handles swing release
+        GameManager.gameManager.OnReleaseEvent -= destroyEventHandler;
         Destroy(gameObject);
     }
 }

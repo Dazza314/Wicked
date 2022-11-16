@@ -66,12 +66,6 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (isShooting && !isSwinging && weapon.CheckMaxGrappleRangeExceeded())
-        {
-            // Check if the max grapple range has been exceeded
-            weapon.DestroyHook();
-        }
-
         if (isSwinging)
         {
             Swing();

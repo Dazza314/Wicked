@@ -41,6 +41,16 @@ public class Weapon : MonoBehaviour
     {
         ropeRenderer = GetComponent<LineRenderer>();
         GameManager.gameManager.OnShootEvent += OnShoot;
+        GameManager.gameManager.OnHookLandedEvent += (object sender, EventArgs e) => isShooting = false;
+    }
+
+    void Update()
+    {
+        if (isShooting && CheckMaxGrappleRangeExceeded())
+        {
+            // Check if the max grapple range has been exceeded
+            DestroyHook();
+        }
     }
 
     void LateUpdate()
@@ -61,25 +71,18 @@ public class Weapon : MonoBehaviour
     {
         if (!isShooting)
         {
-            Shoot();
+            isShooting = true;
+
+            var firePointPosition = firePoint.position;
+            var cursorPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
+
+            var hookDirection = cursorPosition - firePointPosition;
+
+            hookObject = Instantiate<Hook>(hookPrefab, firePointPosition, firePoint.rotation);
+
+            // Set the direction of the hook which was fired
+            hookObject.SetDirection(hookDirection);
         }
-    }
-
-    private void Shoot()
-    {
-        isShooting = true;
-
-        var firePointPosition = firePoint.position;
-        var cursorPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-        var hookDirection = cursorPosition - firePointPosition;
-
-        hookObject = Instantiate<Hook>(hookPrefab, firePointPosition, firePoint.rotation);
-
-        // Set the velocity of the hook which was fired
-        hookObject.SetDirection(hookDirection);
-        // Add an event handler
-        GameManager.gameManager.OnHookLandedEvent += (object sender, EventArgs e) => isShooting = false;
     }
 
     #region Public methods
@@ -97,7 +100,7 @@ public class Weapon : MonoBehaviour
         return hookDisplacement.magnitude > maxGrappleRange;
     }
 
-    public void DestroyHook()
+    private void DestroyHook()
     {
         hookObject.Destroy();
         isShooting = false;

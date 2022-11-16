@@ -1997,7 +1997,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4630a7abd7a1cf44990e341d18fd31e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxGrappleRange: 20
+  maxGrappleRange: 10
   hookPrefab: {fileID: 6742096962618326742, guid: 20b45410fc6e23947afb14723bcd11b9, type: 3}
   firePoint: {fileID: 1214703731}
 --- !u!114 &2058364250
