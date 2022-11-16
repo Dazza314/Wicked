@@ -79,7 +79,7 @@ public class Weapon : MonoBehaviour
         // Set the velocity of the hook which was fired
         hookObject.SetDirection(hookDirection);
         // Add an event handler
-        GameManager.gameManager.OnHookLandedEvent += (object sender, OnSuccessfulHookshotEventArgs e) => isShooting = false;
+        GameManager.gameManager.OnHookLandedEvent += (object sender, EventArgs e) => isShooting = false;
     }
 
     #region Public methods

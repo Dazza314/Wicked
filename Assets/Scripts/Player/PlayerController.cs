@@ -50,10 +50,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private Weapon weapon;
     private bool isShooting => weapon.isShooting;
-    /// <summary>
-    /// Transform of the last hook which successfully landed
-    /// </summary>
-    private Transform lastLandedHook;
+    private Vector3 swingCentre => GameManager.gameManager.currentSwingCentre ?? Vector3.zero;
     #endregion Properties
 
     #region Unity lifecycle methods
@@ -92,7 +89,7 @@ public class PlayerController : MonoBehaviour
             GameManager.gameManager.SwitchCurrentActionMap(ActionMap.Flying);
 
             // Set the velocity and let Unity handle physics until the next swing
-            var swingRadius = transform.position - lastLandedHook.position;
+            var swingRadius = transform.position - swingCentre;
             rb.velocity = Vector3.Cross(Vector3.forward, swingRadius.normalized) * speed * swingDirectionModifier;
         }
     }
@@ -100,14 +97,14 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Event to invoke on successfully landing a hook
     /// </summary>
-    private void OnSuccessfulHookshot(object sender, OnSuccessfulHookshotEventArgs e)
+    private void OnSuccessfulHookshot(object sender, EventArgs e)
     {
-        lastLandedHook = e.hookTransform;
 
         GameManager.gameManager.SwitchCurrentActionMap(ActionMap.Swinging);
 
         // Unity doesn't seem to handle the swinging physics in the way I want, so I'll do it myself
-        var swingRadius = transform.position - e.hookTransform.position;
+        var swingRadius = transform.position - swingCentre;
+        // swingCentre will not be null here
         var swingTangent = Vector3.Cross(swingRadius, Vector3.forward);
 
         var angleBetween = Vector3.Angle(swingTangent, rb.velocity);
@@ -125,14 +122,14 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void Swing()
     {
-        var swingRadius = transform.position - lastLandedHook.position;
+        var swingRadius = transform.position - swingCentre;
         var angularVelocityRadians = speed / swingRadius.magnitude;
         var angularVelocityDegrees = Mathf.Rad2Deg * angularVelocityRadians;
 
         // Factor in whether to swing clockwise or anticlockwise
         var angle = swingDirectionModifier * angularVelocityDegrees;
 
-        transform.RotateAround(lastLandedHook.position, Vector3.forward, angle * Time.deltaTime);
+        transform.RotateAround(swingCentre, Vector3.forward, angle * Time.deltaTime);
 
         //While swinging, decelarate
         speed = Mathf.Sign(speed) * (Mathf.Abs(speed) - swingDeceleration);

@@ -6,12 +6,16 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(PlayerInput))]
 public class GameManager : MonoBehaviour
 {
+    #region Properties
     public static GameManager gameManager { get; private set; }
-    /// <summary>
-    /// The playerInput component being used to control the player
-    /// </summary>
     private PlayerInput playerInput;
+    /// <summary>
+    /// The current position of the landed hook. If no hook has been landed, this will be null
+    /// </summary>
+    public Vector3? currentSwingCentre { get; private set; }
+    #endregion
 
+    #region Unity life cycle methods
     void Awake()
     {
         if (gameManager != null && gameManager != this)
@@ -28,11 +32,9 @@ public class GameManager : MonoBehaviour
     {
         playerInput = GetComponent<PlayerInput>();
     }
+    #endregion
 
     #region Events
-    /// <summary>
-    /// On player death event
-    /// </summary>
     public void OnDeath()
     {
         SceneManager.LoadScene(Scene.Menu);
@@ -47,14 +49,11 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Hook landed
-    public event EventHandler<OnSuccessfulHookshotEventArgs> OnHookLandedEvent;
+    public event EventHandler OnHookLandedEvent;
     public void OnHookLanded(Transform hookTransform)
     {
-        var args = new OnSuccessfulHookshotEventArgs()
-        {
-            hookTransform = hookTransform
-        };
-        OnHookLandedEvent?.Invoke(this, args);
+        currentSwingCentre = hookTransform.position;
+        OnHookLandedEvent?.Invoke(this, EventArgs.Empty);
     }
     #endregion
 
@@ -63,6 +62,7 @@ public class GameManager : MonoBehaviour
     public void OnRelease()
     {
         OnReleaseEvent?.Invoke(this, EventArgs.Empty);
+        currentSwingCentre = null;
     }
     #endregion
     #endregion
@@ -71,9 +71,4 @@ public class GameManager : MonoBehaviour
     {
         playerInput.SwitchCurrentActionMap(actionMap);
     }
-}
-
-public class OnSuccessfulHookshotEventArgs : EventArgs
-{
-    public Transform hookTransform;
 }
