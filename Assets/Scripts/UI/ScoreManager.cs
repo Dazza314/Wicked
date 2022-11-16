@@ -44,7 +44,7 @@ public class ScoreManager : MonoBehaviour
         string currentSpeed = string.Empty;
         if (player != null)
         {
-            currentSpeed = player.GetCurrentSpeed().ToString();
+            currentSpeed = ((int)player.GetCurrentSpeed()).ToString();
         }
         return currentSpeed;
     }
