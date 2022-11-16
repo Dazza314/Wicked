@@ -1,8 +1,8 @@
 using System;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.SceneManagement;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Weapon))]
 public class PlayerController : MonoBehaviour
 {
     #region Serializable fields
@@ -34,10 +34,6 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private Rigidbody2D rb;
     /// <summary>
-    /// The playerInput component being used to control the player
-    /// </summary>
-    private PlayerInput playerInput;
-    /// <summary>
     /// Is the player currently swinging;
     /// </summary>
     private bool isSwinging;
@@ -50,10 +46,6 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private int swingDirectionModifier => (swingDirection == SwingDirection.Clockwise ? 1 : -1);
     /// <summary>
-    /// The renderer for the grappling rope
-    /// </summary>
-    private LineRenderer ropeRenderer;
-    /// <summary>
     /// The weapon to fire the grappling rope
     /// </summary>
     private Weapon weapon;
@@ -64,22 +56,19 @@ public class PlayerController : MonoBehaviour
     private Transform lastLandedHook;
     #endregion Properties
 
-    #region Unity methods
+    #region Unity lifecycle methods
     void Start()
     {
-        // Get components
-        ropeRenderer = GetComponent<LineRenderer>();
         rb = GetComponent<Rigidbody2D>();
-        playerInput = GetComponent<PlayerInput>();
         weapon = GetComponent<Weapon>();
 
         isSwinging = false;
+        GameManager.gameManager.OnHookLandedEvent += OnSuccessfulHookshot;
+        GameManager.gameManager.OnReleaseEvent += OnRelease;
     }
 
     void FixedUpdate()
     {
-        UpdatePlayerRotationWhileAiming();
-
         if (isShooting && !isSwinging && weapon.CheckMaxGrappleRangeExceeded())
         {
             // Check if the max grapple range has been exceeded
@@ -91,81 +80,31 @@ public class PlayerController : MonoBehaviour
             Swing();
         }
     }
-
-    void LateUpdate()
-    {
-        if (isSwinging)
-        {
-            ropeRenderer.enabled = true;
-            ropeRenderer.positionCount = 2;
-            ropeRenderer.SetPositions(new[] { transform.position, lastLandedHook.position });
-        }
-        else
-        {
-            ropeRenderer.enabled = false;
-        }
-    }
-
-    void OnTriggerEnter2D(Collider2D collider2D)
-    {
-        if (collider2D.gameObject.CompareTag(Tag.Terrain) || collider2D.gameObject.CompareTag(Tag.Death))
-        {
-            // If the player collides with anything, the game ends
-            Destroy(gameObject);
-            SceneManager.LoadScene(Scene.Menu);
-        }
-    }
     #endregion
 
-    #region InputEvents
-    private void OnShoot()
-    {
-        if (!isShooting)
-        {
-            weapon.Shoot(OnSuccessfulHookshot);
-        }
-    }
-
-    private void OnRelease()
+    #region Events
+    private void OnRelease(object sender, EventArgs e)
     {
         if (isSwinging)
         {
             isSwinging = false;
             // Swap action maps once the swing is released
-            playerInput.SwitchCurrentActionMap(ActionMap.Flying);
-            weapon.DestroyHook();
+            GameManager.gameManager.SwitchCurrentActionMap(ActionMap.Flying);
 
             // Set the velocity and let Unity handle physics until the next swing
             var swingRadius = transform.position - lastLandedHook.position;
             rb.velocity = Vector3.Cross(Vector3.forward, swingRadius.normalized) * speed * swingDirectionModifier;
         }
     }
-    #endregion
-
-    /// <summary>
-    /// Rotate the player to face the current cursor position
-    /// </summary>
-    private void UpdatePlayerRotationWhileAiming()
-    {
-        var playerPosition = transform.position;
-        var cursorPosition = Camera.main.ScreenToWorldPoint(Mouse.current.position.ReadValue());
-
-        var cursorDirection = cursorPosition - playerPosition;
-
-        var angleRadians = Mathf.Atan2(cursorDirection.x, cursorDirection.y);
-        var angleDegrees = Mathf.Rad2Deg * angleRadians;
-
-        transform.rotation = Quaternion.Euler(0, 0, -angleDegrees);
-    }
 
     /// <summary>
     /// Event to invoke on successfully landing a hook
     /// </summary>
-    void OnSuccessfulHookshot(object sender, OnSuccessfulHookshotEventArgs e)
+    private void OnSuccessfulHookshot(object sender, OnSuccessfulHookshotEventArgs e)
     {
         lastLandedHook = e.hookTransform;
 
-        playerInput.SwitchCurrentActionMap(ActionMap.Swinging);
+        GameManager.gameManager.SwitchCurrentActionMap(ActionMap.Swinging);
 
         // Unity doesn't seem to handle the swinging physics in the way I want, so I'll do it myself
         var swingRadius = transform.position - e.hookTransform.position;
@@ -179,6 +118,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
         isSwinging = true;
     }
+    #endregion
 
     /// <summary>
     /// Update the position of the player as they swing around the landed hook

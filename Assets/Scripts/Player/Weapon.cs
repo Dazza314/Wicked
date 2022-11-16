@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(LineRenderer))]
 public class Weapon : MonoBehaviour
 {
     #region Serializable fields    
@@ -30,10 +31,41 @@ public class Weapon : MonoBehaviour
     /// The instance of the hook being fired
     /// </summary>
     public Hook hookObject { get; private set; }
+    /// <summary>
+    /// The renderer for the grappling rope
+    /// </summary>
+    private LineRenderer ropeRenderer;
     #endregion
 
-    #region Public methods
-    public void Shoot(EventHandler<OnSuccessfulHookshotEventArgs> onSuccessfulHookshot)
+    void Start()
+    {
+        ropeRenderer = GetComponent<LineRenderer>();
+        GameManager.gameManager.OnShootEvent += OnShoot;
+    }
+
+    void LateUpdate()
+    {
+        if (hookObject != null)
+        {
+            ropeRenderer.enabled = true;
+            ropeRenderer.positionCount = 2;
+            ropeRenderer.SetPositions(new[] { transform.position, hookObject.transform.position });
+        }
+        else
+        {
+            ropeRenderer.enabled = false;
+        }
+    }
+
+    private void OnShoot(object sender, EventArgs e)
+    {
+        if (!isShooting)
+        {
+            Shoot();
+        }
+    }
+
+    private void Shoot()
     {
         isShooting = true;
 
@@ -46,12 +78,11 @@ public class Weapon : MonoBehaviour
 
         // Set the velocity of the hook which was fired
         hookObject.SetDirection(hookDirection);
-        // Add the OnSuccessfulHookshot event listener
-        hookObject.OnSuccessfulHookshot += onSuccessfulHookshot;
-        // Add an extra success function
-        hookObject.OnSuccessfulHookshot += (object sender, OnSuccessfulHookshotEventArgs e) => isShooting = false;
+        // Add an event handler
+        GameManager.gameManager.OnHookLandedEvent += (object sender, OnSuccessfulHookshotEventArgs e) => isShooting = false;
     }
 
+    #region Public methods
     /// <summary>
     /// Check if the maximum grapple range has been exceeded by a hook which is currently mid-flight
     /// </summary>

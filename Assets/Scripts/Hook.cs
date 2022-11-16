@@ -25,17 +25,21 @@ public class Hook : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        EventHandler releaseEventHandler = null;
+        releaseEventHandler = (object sender, EventArgs e) =>
+        {
+            Destroy();
+            // Remove event handler after being invoked once as this instance of Hook will no longer exist
+            GameManager.gameManager.OnReleaseEvent -= releaseEventHandler;
+        };
+        GameManager.gameManager.OnReleaseEvent += releaseEventHandler;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Terrain"))
         {
-            var args = new OnSuccessfulHookshotEventArgs()
-            {
-                hookTransform = transform
-            };
-            OnSuccessfulHookshot.Invoke(this, args);
+            GameManager.gameManager.OnHookLanded(transform);
             // Create a joint to hold the hook fixed against the terrain
             var terrainJoint = gameObject.AddComponent<FixedJoint2D>();
             terrainJoint.enableCollision = false;
@@ -62,16 +66,5 @@ public class Hook : MonoBehaviour
     {
         Destroy(gameObject);
     }
-
-    #region Events
-    /// <summary>
-    /// Event invoked on successfully landing a hook on terrain
-    /// </summary>
-    public event EventHandler<OnSuccessfulHookshotEventArgs> OnSuccessfulHookshot;
-    #endregion
 }
 
-public class OnSuccessfulHookshotEventArgs : EventArgs
-{
-    public Transform hookTransform;
-}
