@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float minimumSwingSpeed;
     /// <summary>
-    /// The amount of speed to gain upon commence a swing
+    /// The amount of speed to gain upon commence a swing. The inverse of the swing radius also factors into this
     /// </summary>
     [SerializeField]
     private float swingSpeedBoost;
@@ -45,11 +45,6 @@ public class PlayerController : MonoBehaviour
     /// Directional (sign) modifier based on SwingDirection
     /// </summary>
     private int swingDirectionModifier => (swingDirection == SwingDirection.Clockwise ? 1 : -1);
-    /// <summary>
-    /// The weapon to fire the grappling rope
-    /// </summary>
-    private Weapon weapon;
-    private bool isShooting => weapon.isShooting;
     private Vector3 swingCentre => GameManager.gameManager.currentSwingCentre ?? Vector3.zero;
     #endregion Properties
 
@@ -57,7 +52,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        weapon = GetComponent<Weapon>();
 
         isSwinging = false;
         GameManager.gameManager.OnHookLandedEvent += OnSuccessfulHookshot;
@@ -104,7 +98,7 @@ public class PlayerController : MonoBehaviour
         var angleBetween = Vector3.Angle(swingTangent, rb.velocity);
         swingDirection = angleBetween > 90 ? SwingDirection.Clockwise : SwingDirection.AntiClockwise;
 
-        speed = MathF.Max(rb.velocity.magnitude + swingSpeedBoost, minimumSwingSpeed);
+        speed = MathF.Max(rb.velocity.magnitude + swingSpeedBoost / swingRadius.magnitude, minimumSwingSpeed);
 
         rb.velocity = Vector2.zero;
         isSwinging = true;

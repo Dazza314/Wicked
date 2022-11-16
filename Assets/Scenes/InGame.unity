@@ -1747,7 +1747,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 6
   minimumSwingSpeed: 4
-  swingSpeedBoost: 3
+  swingSpeedBoost: 8
   swingDeceleration: 0.005
 --- !u!58 &2058364244
 CircleCollider2D:
