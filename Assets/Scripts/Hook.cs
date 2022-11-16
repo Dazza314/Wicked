@@ -31,9 +31,13 @@ public class Hook : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Terrain"))
         {
-            OnSuccessfulHookshot.Invoke(this, EventArgs.Empty);
+            var args = new OnSuccessfulHookshotEventArgs()
+            {
+                hookTransform = transform
+            };
+            OnSuccessfulHookshot.Invoke(this, args);
             // Create a joint to hold the hook fixed against the terrain
-            var terrainJoint = this.gameObject.AddComponent<FixedJoint2D>();
+            var terrainJoint = gameObject.AddComponent<FixedJoint2D>();
             terrainJoint.enableCollision = false;
 
             terrainJoint.connectedBody = collision.gameObject.GetComponent<Rigidbody2D>();
@@ -56,13 +60,18 @@ public class Hook : MonoBehaviour
     /// </summary>
     public void Destroy()
     {
-        Destroy(this.gameObject);
+        Destroy(gameObject);
     }
 
     #region Events
     /// <summary>
     /// Event invoked on successfully landing a hook on terrain
     /// </summary>
-    public event EventHandler OnSuccessfulHookshot;
+    public event EventHandler<OnSuccessfulHookshotEventArgs> OnSuccessfulHookshot;
     #endregion
+}
+
+public class OnSuccessfulHookshotEventArgs : EventArgs
+{
+    public Transform hookTransform;
 }

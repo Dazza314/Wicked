@@ -1560,6 +1560,7 @@ GameObject:
   - component: {fileID: 2058364246}
   - component: {fileID: 2058364247}
   - component: {fileID: 2058364248}
+  - component: {fileID: 2058364249}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1608,12 +1609,12 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: cfe2897d6b920dd4a8a1adeb4cf14db1, type: 3}
+  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 2.56, y: 2.56}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -1668,12 +1669,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d65759dc5194c4682ff7c9f0fca275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firePoint: {fileID: 1214703731}
-  hookPrefab: {fileID: 6742096962618326742, guid: 20b45410fc6e23947afb14723bcd11b9, type: 3}
-  maxGrappleRange: 10
-  ropeRenderer: {fileID: 2058364246}
   speed: 6
-  swingAcceleration: 2
+  minimumSwingSpeed: 4
+  swingSpeedBoost: 3
+  swingDeceleration: 0.005
 --- !u!58 &2058364244
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -1941,3 +1940,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerTrail: {fileID: 2058364247}
   playerController: {fileID: 2058364243}
+--- !u!114 &2058364249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2058364238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4630a7abd7a1cf44990e341d18fd31e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxGrappleRange: 20
+  hookPrefab: {fileID: 6742096962618326742, guid: 20b45410fc6e23947afb14723bcd11b9, type: 3}
+  firePoint: {fileID: 1214703731}
