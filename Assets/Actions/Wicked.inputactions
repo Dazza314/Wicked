@@ -2,7 +2,7 @@
     "name": "Wicked",
     "maps": [
         {
-            "name": "Flying",
+            "name": "Game",
             "id": "a2a99864-64d7-48fa-a5d5-c4bb64ca3682",
             "actions": [
                 {
@@ -12,6 +12,15 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Release",
+                    "type": "Button",
+                    "id": "08aef872-8488-4f61-b92c-3ffd30e60ccb",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)",
                     "initialStateCheck": false
                 }
             ],
@@ -26,28 +35,22 @@
                     "action": "Shoot",
                     "isComposite": false,
                     "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "Swinging",
-            "id": "31236a82-9ecf-4a62-9b40-9a3e93602916",
-            "actions": [
-                {
-                    "name": "Release",
-                    "type": "Button",
-                    "id": "95f6a1ee-19ed-4b31-af44-6ec01c1a0b48",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
+                },
                 {
                     "name": "",
-                    "id": "8488e054-478f-41c7-886d-a558fce278cc",
-                    "path": "<Mouse>/rightButton",
+                    "id": "19cb8636-e24e-4b25-8fe0-bdf53fa9c560",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cb891090-6609-453e-9f5d-ffe4878642b5",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard&Mouse",
@@ -57,7 +60,7 @@
                 },
                 {
                     "name": "",
-                    "id": "358908e6-3414-4219-8158-fe2120d8257d",
+                    "id": "ab1ccbae-65fb-4400-8905-a3e1738bfe27",
                     "path": "<Keyboard>/e",
                     "interactions": "",
                     "processors": "",

@@ -73,8 +73,6 @@ public class PlayerController : MonoBehaviour
         if (isSwinging)
         {
             isSwinging = false;
-            // Swap action maps once the swing is released
-            GameManager.gameManager.SwitchCurrentActionMap(ActionMap.Flying);
 
             // Set the velocity and let Unity handle physics until the next swing
             var swingRadius = transform.position - swingCentre;
@@ -87,9 +85,6 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void OnSuccessfulHookshot(object sender, EventArgs e)
     {
-
-        GameManager.gameManager.SwitchCurrentActionMap(ActionMap.Swinging);
-
         // Unity doesn't seem to handle the swinging physics in the way I want, so I'll do it myself
         var swingRadius = transform.position - swingCentre;
         // swingCentre will not be null here
