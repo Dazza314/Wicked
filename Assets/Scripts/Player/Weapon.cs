@@ -26,11 +26,11 @@ public class Weapon : MonoBehaviour
     /// <summary>
     /// Is the hook currently mid-flight
     /// </summary>
-    public bool isShooting { get; private set; }
+    private bool isShooting { get; set; }
     /// <summary>
     /// The instance of the hook being fired
     /// </summary>
-    public Hook hookObject { get; private set; }
+    private Hook hookObject { get; set; }
     /// <summary>
     /// The renderer for the grappling rope
     /// </summary>
@@ -42,6 +42,7 @@ public class Weapon : MonoBehaviour
         ropeRenderer = GetComponent<LineRenderer>();
         GameManager.gameManager.OnShootEvent += OnShoot;
         GameManager.gameManager.OnHookLandedEvent += (object sender, EventArgs e) => isShooting = false;
+        GameManager.gameManager.OnHookLandedOnWallEvent += (object sender, EventArgs e) => isShooting = false;
     }
 
     void Update()
@@ -49,7 +50,8 @@ public class Weapon : MonoBehaviour
         if (isShooting && CheckMaxGrappleRangeExceeded())
         {
             // Check if the max grapple range has been exceeded
-            DestroyHook();
+            Destroy(hookObject.gameObject);
+            isShooting = false;
         }
     }
 
@@ -98,12 +100,6 @@ public class Weapon : MonoBehaviour
         var hookDisplacement = hookObject.transform.position - firePoint.transform.position;
 
         return hookDisplacement.magnitude > maxGrappleRange;
-    }
-
-    private void DestroyHook()
-    {
-        hookObject.Destroy();
-        isShooting = false;
     }
     #endregion
 }

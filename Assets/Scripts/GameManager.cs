@@ -69,6 +69,13 @@ public class GameManager : MonoBehaviour
         OnHookLandedEvent?.Invoke(this, EventArgs.Empty);
     }
     #endregion
+    #region Hook hits wall
+    public event EventHandler OnHookLandedOnWallEvent;
+    public void OnHookLandedOnWall()
+    {
+        OnHookLandedOnWallEvent?.Invoke(this, EventArgs.Empty);
+    }
+    #endregion
     #region Release
     public event EventHandler OnReleaseEvent;
     public void OnRelease()

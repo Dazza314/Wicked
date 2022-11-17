@@ -555,7 +555,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -1728,6 +1728,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1506485461}
     m_Modifications:
+    - target: {fileID: 438437091044181369, guid: 22ebc0f0dfe99fa45a835b70ef1b2627, type: 3}
+      propertyPath: m_IsTrigger
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6188074958008613916, guid: 22ebc0f0dfe99fa45a835b70ef1b2627, type: 3}
       propertyPath: m_Name
       value: Walls
@@ -2120,7 +2124,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -2385,3 +2389,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb1318ef8014e3e48b1328d9fd900182, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  particleSystemPrefab: {fileID: 5927629303694092789, guid: 720a2084a319db84c904269c918f8a39, type: 3}

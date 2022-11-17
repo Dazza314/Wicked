@@ -22,17 +22,25 @@ public class Hook : MonoBehaviour
     private EventHandler destroyEventHandler;
     #endregion
 
+    #region Unity lifecycle methods
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         destroyEventHandler = (object sender, EventArgs e) =>
         {
             // Remove event handler after being invoked once as this instance of Hook will no longer exist
-            GameManager.gameManager.OnReleaseEvent -= destroyEventHandler;
-            this.Destroy();
+            // GameManager.gameManager.OnReleaseEvent -= destroyEventHandler;
+            Destroy(gameObject);
         };
         GameManager.gameManager.OnReleaseEvent += destroyEventHandler;
     }
+
+    void OnDestroy()
+    {
+        // When destroying the hook, remove the eventHandler which handles swing release
+        GameManager.gameManager.OnReleaseEvent -= destroyEventHandler;
+    }
+    #endregion
 
     void OnCollisionEnter2D(Collision2D collision)
     {
@@ -46,6 +54,11 @@ public class Hook : MonoBehaviour
             terrainJoint.connectedBody = collision.gameObject.GetComponent<Rigidbody2D>();
             terrainJoint.enabled = true;
         }
+        else if (collision.gameObject.CompareTag("Death"))
+        {
+            Destroy(gameObject);
+            GameManager.gameManager.OnHookLandedOnWall();
+        }
     }
 
     /// <summary>
@@ -56,15 +69,4 @@ public class Hook : MonoBehaviour
         direction.Normalize();
         rb.velocity = direction * speed;
     }
-
-    /// <summary>
-    /// Destroy the hook game object and do any associated cleanup
-    /// </summary>
-    public void Destroy()
-    {
-        // When destorying the hook, remove the eventHandler which handles swing release
-        GameManager.gameManager.OnReleaseEvent -= destroyEventHandler;
-        Destroy(gameObject);
-    }
 }
-

@@ -65,6 +65,12 @@ public class PlayerController : MonoBehaviour
             Swing();
         }
     }
+
+    void OnDestroy()
+    {
+        GameManager.gameManager.OnHookLandedEvent -= OnSuccessfulHookshot;
+        GameManager.gameManager.OnReleaseEvent -= OnRelease;
+    }
     #endregion
 
     #region Events
