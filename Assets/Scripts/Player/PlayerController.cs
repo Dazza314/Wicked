@@ -109,14 +109,14 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// Update the position of the player as they swing around the landed hook
     /// </summary>
-    void Swing()
+    private void Swing()
     {
         var swingRadius = transform.position - swingCentre;
-        var angularVelocityRadians = speed / swingRadius.magnitude;
-        var angularVelocityDegrees = Mathf.Rad2Deg * angularVelocityRadians;
+        var angularSpeedRadians = speed / swingRadius.magnitude;
+        var angularSpeedDegrees = Mathf.Rad2Deg * angularSpeedRadians;
 
         // Factor in whether to swing clockwise or anticlockwise
-        var angle = swingDirectionModifier * angularVelocityDegrees;
+        var angle = swingDirectionModifier * angularSpeedDegrees;
 
         transform.RotateAround(swingCentre, Vector3.forward, angle * Time.deltaTime);
 
