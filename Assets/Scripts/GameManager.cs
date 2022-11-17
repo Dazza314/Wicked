@@ -7,6 +7,9 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(PlayerInput))]
 public class GameManager : MonoBehaviour
 {
+    #region Serializable fields
+    [SerializeField] private GameObject deathMenu;
+    #endregion
     #region Properties
     public static GameManager gameManager { get; private set; }
     private PlayerInput playerInput;
@@ -37,11 +40,16 @@ public class GameManager : MonoBehaviour
     #endregion
 
     #region Events
+    #region Death
+    public event EventHandler OnDeathEvent;
     public void OnDeath()
     {
-        SceneManager.LoadScene(Scene.Menu);
+        deathMenu.SetActive(true);
+        StartCoroutine(DisableInputForTime(0.5f));
+        SwitchCurrentActionMap(ActionMap.Menu);
+        OnDeathEvent?.Invoke(this, EventArgs.Empty);
     }
-
+    #endregion
     #region Shoot
     public event EventHandler OnShootEvent;
     public void OnShoot()
@@ -53,7 +61,6 @@ public class GameManager : MonoBehaviour
         OnShootEvent?.Invoke(this, EventArgs.Empty);
     }
     #endregion
-
     #region Hook landed
     public event EventHandler OnHookLandedEvent;
     public void OnHookLanded(Transform hookTransform)
@@ -62,7 +69,6 @@ public class GameManager : MonoBehaviour
         OnHookLandedEvent?.Invoke(this, EventArgs.Empty);
     }
     #endregion
-
     #region Release
     public event EventHandler OnReleaseEvent;
     public void OnRelease()
@@ -79,10 +85,26 @@ public class GameManager : MonoBehaviour
         currentSwingCentre = null;
     }
     #endregion
+    #region Play again
+    public event EventHandler OnPlayAgainEvent;
+    public void OnPlayAgain()
+    {
+        SceneManager.LoadScene(Scene.Game);
+        SwitchCurrentActionMap(ActionMap.Game);
+        OnPlayAgainEvent?.Invoke(this, EventArgs.Empty);
+    }
+    #endregion
     #endregion
 
     public void SwitchCurrentActionMap(string actionMap)
     {
         playerInput.SwitchCurrentActionMap(actionMap);
+    }
+
+    private IEnumerator DisableInputForTime(float seconds)
+    {
+        playerInput.DeactivateInput();
+        yield return new WaitForSeconds(seconds);
+        playerInput.ActivateInput();
     }
 }

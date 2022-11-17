@@ -7,7 +7,6 @@ public class DeathCollision : MonoBehaviour
         if (collider2D.gameObject.CompareTag(Tag.Terrain) || collider2D.gameObject.CompareTag(Tag.Death))
         {
             // If the player collides with anything, the game ends
-            Destroy(gameObject);
             GameManager.gameManager.OnDeath();
         }
     }

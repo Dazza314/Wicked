@@ -2,6 +2,7 @@
 public struct ActionMap
 {
     public static string Game = "Game";
+    public static string Menu = "Menu";
 }
 
 public struct Scene
