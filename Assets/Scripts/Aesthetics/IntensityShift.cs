@@ -1,15 +1,9 @@
-using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+using UnityEngine.Rendering.PostProcessing;
 
 public class IntensityShift : MonoBehaviour
 {
     #region Serializable fields
-    /// <summary>
-    /// List of renderers to apply the colour intensity shift to
-    /// </summary>
-    [SerializeField]
-    private Renderer[] renderers;
     /// <summary>
     /// The maximum intensity to reach
     /// </summary>
@@ -25,37 +19,35 @@ public class IntensityShift : MonoBehaviour
     /// </summary>
     [SerializeField]
     private float frequency;
-    /// <summary>
-    /// The base colour of the material
-    /// </summary>
-    [SerializeField]
-    private Color colour;
     #endregion
     #region Properties
     /// <summary>
-    /// A list of materials corresponding to <see cref="renderers"/>
+    /// The PostProcessVolume to apply the colour intensity shift to
     /// </summary>
-    private List<Material> materials;
+    private PostProcessVolume postProcessVolume;
+    private Bloom bloom;
     #endregion
 
+    #region Unity lifecycle methods
     void Start()
     {
-        materials = renderers.Select(renderer => renderer.material).ToList();
-    }
-    void FixedUpdate()
-    {
-        materials.ForEach(material => material.SetColor("_EmissionColor", CalculateColour()));
+        bloom = ScriptableObject.CreateInstance<Bloom>();
+        bloom.enabled.Override(true);
     }
 
-    private Color CalculateColour()
+    void FixedUpdate()
+    {
+        bloom.intensity.Override(CalculateIntensity());
+    }
+    #endregion
+
+    private float CalculateIntensity()
     {
         var minimumFactor = Mathf.Pow(2, minimumIntensity);
         var maximumFactor = Mathf.Pow(2, maximumIntensity);
         var midpoint = (maximumFactor + minimumFactor) / 2;
         var amplitude = (maximumFactor - minimumFactor) / 2;
 
-        var intensityMultiplier = midpoint + amplitude * Mathf.Sin(Time.time * frequency);
-
-        return intensityMultiplier * colour;
+        return midpoint + amplitude * Mathf.Sin(Time.time * frequency);
     }
 }
