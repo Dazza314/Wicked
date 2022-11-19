@@ -23,3 +23,8 @@ public struct Tag
     public static string Terrain = "Terrain";
     public static string Hook = "Hook";
 }
+
+public struct Options
+{
+    public static string ShowDirectionArrow = "ShowDirectionArrow";
+}

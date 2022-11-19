@@ -46,7 +46,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private int swingDirectionModifier => (swingDirection == SwingDirection.Clockwise ? 1 : -1);
     private Vector3 swingCentre => GameManager.gameManager.currentSwingCentre ?? Vector3.zero;
-    #endregion Properties
+    #endregion
 
     #region Unity lifecycle methods
     void Start()
