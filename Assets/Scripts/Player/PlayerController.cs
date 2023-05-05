@@ -99,7 +99,9 @@ public class PlayerController : MonoBehaviour
         var angleBetween = Vector3.Angle(swingTangent, rb.velocity);
         swingDirection = angleBetween > 90 ? SwingDirection.Clockwise : SwingDirection.AntiClockwise;
 
-        speed = MathF.Max(rb.velocity.magnitude + swingSpeedBoost / swingRadius.magnitude, minimumSwingSpeed);
+        var minSpeedBoostFactor = Mathf.Max(swingRadius.magnitude, 2);
+
+        speed = MathF.Max(rb.velocity.magnitude + swingSpeedBoost / minSpeedBoostFactor, minimumSwingSpeed);
 
         rb.velocity = Vector2.zero;
         isSwinging = true;
@@ -122,6 +124,12 @@ public class PlayerController : MonoBehaviour
 
         //While swinging, decelarate
         speed = Mathf.Sign(speed) * (Mathf.Abs(speed) - swingDeceleration);
+
+        //If swinging too close, expand a bit
+        if (swingRadius.magnitude < 1.6f)
+        {
+            transform.position += swingRadius.normalized * 0.05f;
+        }
     }
 
     #region Public methods

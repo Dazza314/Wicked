@@ -15,11 +15,17 @@ public class TerrainGenerator : MonoBehaviour
 
         for (int i = 0; i < pillarCount; i++)
         {
-            pillarPosition.y += Random.Range(1.5f, 4f);
-            pillarPosition.x = Random.Range(-8f, 8f);
+            var minYGap = yGap(pillarPosition.y);
+            pillarPosition.y += Random.Range(minYGap, 9f - minYGap);
+            pillarPosition.x = Random.Range(-6f, 6f);
             Instantiate(pillarPrefab, pillarPosition, Quaternion.identity);
         }
 
+    }
+
+    private float yGap(float currentY)
+    {
+        return (float)(5 - System.Math.Tanh(currentY / 100));
     }
 
 }

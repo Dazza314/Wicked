@@ -2378,8 +2378,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3d65759dc5194c4682ff7c9f0fca275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 6
-  minimumSwingSpeed: 4
+  speed: 7
+  minimumSwingSpeed: 5
   swingSpeedBoost: 8
   swingDeceleration: 0.005
 --- !u!58 &2058364244

@@ -18,6 +18,7 @@ public class DirectionalArrow : MonoBehaviour
     /// <summary>
     /// Whether or not to show the arrow as set in player prefs
     /// </summary>
+    private EventHandler onReleaseEventHandler, onHookLandedEventHandler;
     private bool showArrowPlayerPref => Convert.ToBoolean(PlayerPrefs.GetInt(Options.ShowDirectionArrow, 0));
     #endregion
 
@@ -31,8 +32,10 @@ public class DirectionalArrow : MonoBehaviour
             swingDirectionArrow.transform.parent = transform;
         }
 
-        GameManager.gameManager.OnHookLandedEvent += (object sender, EventArgs e) => HideArrow();
-        GameManager.gameManager.OnReleaseEvent += (object sender, EventArgs e) => ShowArrow();
+        onHookLandedEventHandler = (object sender, EventArgs e) => HideArrow();
+        GameManager.gameManager.OnHookLandedEvent += onHookLandedEventHandler;
+        onReleaseEventHandler = (object sender, EventArgs e) => ShowArrow();
+        GameManager.gameManager.OnReleaseEvent += onReleaseEventHandler;
     }
 
     void FixedUpdate()
@@ -42,8 +45,8 @@ public class DirectionalArrow : MonoBehaviour
 
     void OnDestroy()
     {
-        GameManager.gameManager.OnHookLandedEvent -= (object sender, EventArgs e) => HideArrow();
-        GameManager.gameManager.OnReleaseEvent -= (object sender, EventArgs e) => ShowArrow();
+        GameManager.gameManager.OnHookLandedEvent -= onHookLandedEventHandler;
+        GameManager.gameManager.OnReleaseEvent -= onReleaseEventHandler;
     }
     #endregion
 
